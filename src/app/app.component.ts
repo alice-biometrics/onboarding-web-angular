@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  Onboarding,
   OnboardingConfig,
   OnboardingWelcome,
   SandboxAuthenticator,
@@ -36,23 +37,29 @@ export class AppComponent implements OnInit {
     let environment = 'staging';
     new SandboxAuthenticator(this.sandboxToken, userInfo, environment)
       .execute()
-      .then((userToken) => console.log(userToken))
+      .then((userToken: string) => this.startOnboarding(userToken))
       .catch((error) => console.error(error));
   }
 
+  startOnboarding(userToken: string): void {
+    console.log('start onboarding');
+    let config = new OnboardingConfig()
+      .withUserToken(userToken)
+      .withAddSelfieStage();
     new Onboarding('alice-onboarding-mount', config).run(
-      function (userInfo) {
-        console.log(
-          'Onboarding complete. User info: ' + JSON.stringify(userInfo)
-        );
-      },
-      function (error) {
-        console.error('Onboarding error. Error: ' + error.toString());
-      },
-      function () {
-        console.log('Onboarding was canceled by the user');
-      }
+      this.onSuccess,
+      this.onFailure,
+      this.onCancel
     );
+  }
+
+  onSuccess() {
+    console.log('sucess');
+  }
+
+  onFailure(error: any) {
+    console.log('failure');
+    console.error(error);
   }
 
   onCancel() {
