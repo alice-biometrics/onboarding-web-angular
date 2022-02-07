@@ -1,21 +1,44 @@
-import { Component } from '@angular/core';
-import { Onboarding, OnboardingConfig, DocumentType } from 'aliceonboarding';
+import { Component, OnInit } from '@angular/core';
+import {
+  OnboardingConfig,
+  OnboardingWelcome,
+  SandboxAuthenticator,
+} from 'aliceonboarding';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'angular8-aliceonboarding';
+export class AppComponent implements OnInit {
+  sandboxToken: string;
 
-  startOnboarding(): void {
-    console.log('Hello');
+  constructor() {}
 
-    let config = new OnboardingConfig()
-      .withUserToken('usertoken')
-      .withAddSelfieStage()
-      .withAddDocumentStage(DocumentType.IDCARD);
+  ngOnInit() {
+    this.sandboxToken = 'userToken';
+
+    this.launchOnboardingWelcome();
+  }
+
+  launchOnboardingWelcome() {
+    let config = {
+      language: 'en',
+      requiredInfo: ['email'],
+    };
+    new OnboardingWelcome('alice-onboarding-mount', config).run(
+      this.onUserInfo.bind(this),
+      this.onCancel.bind(this)
+    );
+  }
+
+  onUserInfo(userInfo) {
+    let environment = 'staging';
+    new SandboxAuthenticator(this.sandboxToken, userInfo, environment)
+      .execute()
+      .then((userToken) => console.log(userToken))
+      .catch((error) => console.error(error));
+  }
 
     new Onboarding('alice-onboarding-mount', config).run(
       function (userInfo) {
@@ -32,7 +55,7 @@ export class AppComponent {
     );
   }
 
-  ngOnInit() {
-    this.startOnboarding();
+  onCancel() {
+    console.log('on cancel');
   }
 }
