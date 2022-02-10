@@ -3,7 +3,7 @@ import {
   Onboarding,
   OnboardingConfig,
   OnboardingWelcome,
-  SandboxAuthenticator,
+  TrialAuthenticator,
 } from 'aliceonboarding';
 
 @Component({
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
   onUserInfo(userInfo) {
     let environment = 'staging';
-    new SandboxAuthenticator(this.sandboxToken, userInfo, environment)
+    new TrialAuthenticator(this.sandboxToken, userInfo, environment)
       .execute()
       .then((userToken: string) => this.startOnboarding(userToken))
       .catch((error) => console.error(error));
