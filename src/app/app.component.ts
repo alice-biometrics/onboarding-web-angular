@@ -12,12 +12,12 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  sandboxToken: string;
+  trialToken: string;
 
   constructor() {}
 
   ngOnInit() {
-    this.sandboxToken = 'userToken';
+    this.trialToken = 'clientToken';
 
     this.launchOnboardingWelcome();
   }
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
   onUserInfo(userInfo) {
     let environment = 'staging';
-    new TrialAuthenticator(this.sandboxToken, userInfo, environment)
+    new TrialAuthenticator(this.trialToken, userInfo, environment)
       .execute()
       .then((userToken: string) => this.startOnboarding(userToken))
       .catch((error) => console.error(error));
