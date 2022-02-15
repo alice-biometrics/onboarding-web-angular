@@ -1,38 +1,68 @@
-import { Component } from '@angular/core';
-import { Onboarding, OnboardingConfig, DocumentType } from 'aliceonboarding';
+import { Component, OnInit } from '@angular/core';
+import {
+  Onboarding,
+  OnboardingConfig,
+  OnboardingWelcome,
+  TrialAuthenticator,
+} from 'aliceonboarding';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'angular8-aliceonboarding';
+export class AppComponent implements OnInit {
+  trialToken: string;
 
-  startOnboarding(): void {
-    console.log('Hello');
+  constructor() {}
 
-    let config = new OnboardingConfig()
-      .withUserToken('usertoken')
-      .withAddSelfieStage()
-      .withAddDocumentStage(DocumentType.IDCARD);
+  ngOnInit() {
+    this.trialToken = 'clientToken';
 
-    new Onboarding('alice-onboarding-mount', config).run(
-      function (userInfo) {
-        console.log(
-          'Onboarding complete. User info: ' + JSON.stringify(userInfo)
-        );
-      },
-      function (error) {
-        console.error('Onboarding error. Error: ' + error.toString());
-      },
-      function () {
-        console.log('Onboarding was canceled by the user');
-      }
+    this.launchOnboardingWelcome();
+  }
+
+  launchOnboardingWelcome() {
+    let config = {
+      language: 'en',
+      requiredInfo: ['email'],
+    };
+    new OnboardingWelcome('alice-onboarding-mount', config).run(
+      this.onUserInfo.bind(this),
+      this.onCancel.bind(this)
     );
   }
 
-  ngOnInit() {
-    this.startOnboarding();
+  onUserInfo(userInfo) {
+    let environment = 'staging';
+    new TrialAuthenticator(this.trialToken, userInfo, environment)
+      .execute()
+      .then((userToken: string) => this.startOnboarding(userToken))
+      .catch((error) => console.error(error));
+  }
+
+  startOnboarding(userToken: string): void {
+    console.log('start onboarding');
+    let config = new OnboardingConfig()
+      .withUserToken(userToken)
+      .withAddSelfieStage();
+    new Onboarding('alice-onboarding-mount', config).run(
+      this.onSuccess,
+      this.onFailure,
+      this.onCancel
+    );
+  }
+
+  onSuccess() {
+    console.log('sucess');
+  }
+
+  onFailure(error: any) {
+    console.log('failure');
+    console.error(error);
+  }
+
+  onCancel() {
+    console.log('on cancel');
   }
 }
