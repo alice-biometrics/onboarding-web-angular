@@ -1,68 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  Onboarding,
-  OnboardingConfig,
-  OnboardingWelcome,
-  TrialAuthenticator,
-} from 'aliceonboarding';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   trialToken: string;
+  displayToken: boolean;
+  displayOnboarding: boolean;
 
-  constructor() {}
-
-  ngOnInit() {
-    this.trialToken = 'clientToken';
-
-    this.launchOnboardingWelcome();
+  constructor() {
+    this.displayToken = true;
+    this.displayOnboarding = false;
   }
 
-  launchOnboardingWelcome() {
-    let config = {
-      language: 'en',
-      requiredInfo: ['email'],
-    };
-    new OnboardingWelcome('alice-onboarding-mount', config).run(
-      this.onUserInfo.bind(this),
-      this.onCancel.bind(this)
-    );
-  }
-
-  onUserInfo(userInfo) {
-    let environment = 'staging';
-    new TrialAuthenticator(this.trialToken, userInfo, environment)
-      .execute()
-      .then((userToken: string) => this.startOnboarding(userToken))
-      .catch((error) => console.error(error));
-  }
-
-  startOnboarding(userToken: string): void {
-    console.log('start onboarding');
-    let config = new OnboardingConfig()
-      .withUserToken(userToken)
-      .withAddSelfieStage();
-    new Onboarding('alice-onboarding-mount', config).run(
-      this.onSuccess,
-      this.onFailure,
-      this.onCancel
-    );
-  }
-
-  onSuccess() {
-    console.log('sucess');
-  }
-
-  onFailure(error: any) {
-    console.log('failure');
-    console.error(error);
-  }
-
-  onCancel() {
-    console.log('on cancel');
+  trialTokenAdded(trialToken: string) {
+    this.trialToken = trialToken;
+    this.displayToken = false;
+    this.displayOnboarding = true;
   }
 }
