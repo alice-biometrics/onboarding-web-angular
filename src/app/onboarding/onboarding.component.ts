@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   Onboarding,
   OnboardingConfig,
@@ -12,6 +12,7 @@ import {
 })
 export class OnboardingComponent implements OnInit {
   @Input() trialToken: string;
+  @Output() backEvent = new EventEmitter<boolean>(false);
 
   ngOnInit() {
     this.launchOnboardingWelcome();
@@ -49,7 +50,10 @@ export class OnboardingComponent implements OnInit {
       .catch((error) => console.error(error));
   }
 
-  onCancel() {}
+  onCancel() {
+    this.backEvent.emit(true);
+  }
+
   onSuccess() {
     console.log('sucess');
   }

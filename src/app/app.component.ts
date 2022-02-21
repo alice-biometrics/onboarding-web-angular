@@ -20,4 +20,8 @@ export class AppComponent {
     this.displayToken = false;
     this.displayOnboarding = true;
   }
+
+  goBack(event: boolean) {
+    this.displayToken = event;
+  }
 }

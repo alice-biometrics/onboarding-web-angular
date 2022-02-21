@@ -3,6 +3,6 @@
 </header>
 <body>
     <token *ngIf="displayToken" (trialTokenEvent)="trialTokenAdded($event)"></token>
-    <onboarding *ngIf="displayOnboarding" [trialToken]="trialToken"></onboarding>
+    <onboarding *ngIf="displayOnboarding" (backEvent)="goBack($event)" [trialToken]="trialToken"></onboarding>
 </body>
 <footer></footer>
