@@ -1,0 +1,27 @@
+.token {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.token__label {
+  margin-bottom: 1rem;
+}
+
+.token__text {
+  resize: none;
+}
+
+.token__button {
+  margin-top: 2rem;
+  border: none;
+  border-radius: 15px;
+  width: 70px;
+  height: 50px;
+  background-color: lightblue;
+  font-weight: bold;
+  &:hover {
+    background-color: lightgray;
+  }
+}
