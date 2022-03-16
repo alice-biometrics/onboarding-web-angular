@@ -1,0 +1,6 @@
+<div class="token">
+    <label for="clientToken" class="token__label">Insert client token</label>
+    <textarea class="token__text" name="clientToken" id="trialToken" cols="60" rows="10" [(ngModel)]="trialToken"></textarea>
+    <p class="token__message" [hidden]="!errorTokenMsg">Not a valid token</p>
+    <button class="token__button" type="button" (click)="getToken()">Save Token</button>
+</div>

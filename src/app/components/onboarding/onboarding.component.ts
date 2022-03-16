@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   Onboarding,
   OnboardingConfig,
@@ -7,22 +7,19 @@ import {
 } from 'aliceonboarding';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'onboarding',
+  templateUrl: './onboarding.component.html',
 })
-export class AppComponent implements OnInit {
-  trialToken: string;
-
-  constructor() {}
+export class OnboardingComponent implements OnInit {
+  @Input() trialToken: string;
+  @Output() backEvent = new EventEmitter<boolean>(false);
 
   ngOnInit() {
-    this.trialToken = 'clientToken';
-
     this.launchOnboardingWelcome();
   }
 
   launchOnboardingWelcome() {
+    console.log('launched onboarding process');
     let config = {
       language: 'en',
       requiredInfo: ['email'],
@@ -33,15 +30,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  onUserInfo(userInfo) {
-    let environment = 'staging';
-    new TrialAuthenticator(this.trialToken, userInfo, environment)
-      .execute()
-      .then((userToken: string) => this.startOnboarding(userToken))
-      .catch((error) => console.error(error));
-  }
-
-  startOnboarding(userToken: string): void {
+  startOnboarding(userToken: string) {
     console.log('start onboarding');
     let config = new OnboardingConfig()
       .withUserToken(userToken)
@@ -53,6 +42,18 @@ export class AppComponent implements OnInit {
     );
   }
 
+  onUserInfo(userInfo) {
+    let environment = 'staging';
+    new TrialAuthenticator(this.trialToken, userInfo, environment)
+      .execute()
+      .then((userToken: string) => this.startOnboarding(userToken))
+      .catch((error) => console.error(error));
+  }
+
+  onCancel() {
+    this.backEvent.emit(true);
+  }
+
   onSuccess() {
     console.log('sucess');
   }
@@ -60,9 +61,5 @@ export class AppComponent implements OnInit {
   onFailure(error: any) {
     console.log('failure');
     console.error(error);
-  }
-
-  onCancel() {
-    console.log('on cancel');
   }
 }
