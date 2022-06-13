@@ -1,0 +1,39 @@
+name: Release update
+
+on:
+  release:
+    types: [published]
+
+env:
+  ALICE_GITHUB_ACCESS_TOKEN: ${{ secrets.ALICE_GITHUB_ACCESS_TOKEN }}
+  GITHUB_REF: ${{ github.ref }}
+
+jobs:
+  angular-demo-update-release:
+    name: Angular Demo update release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set RELEASE_VERSION
+        run: |
+           echo "RELEASE_VERSION=$(echo ${GITHUB_REF:11})" >> $GITHUB_ENV
+      - name: Install latest sdk version
+        run: |
+          npm install aliceonboarding@${RELEASE_VERSION}
+      - name: Build angular demo
+        run:  |
+          npm build
+      - name: Git - Update changes
+        run: |
+          npm version ${RELEASE_VERSION}
+          git add -u
+      - name: Git - Commit changes
+        run: |
+          git config --global user.email "dev@alicebiometrics.com"
+          git config --global user.name "ALiCE Biometrics"
+          git commit -m "Update version to ${RELEASE_VERSION}"
+      - name: Push changes
+        uses: alice-biometrics/github-push-action@master
+        with:
+          github_token: ${{ secrets.ALICE_GITHUB_ACCESS_TOKEN }}
