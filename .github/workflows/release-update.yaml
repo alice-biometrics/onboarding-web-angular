@@ -5,7 +5,6 @@ on:
     types: [published]
 
 env:
-  ALICE_GITHUB_ACCESS_TOKEN: ${{ secrets.ALICE_GITHUB_ACCESS_TOKEN }}
   GITHUB_REF: ${{ github.ref }}
 
 jobs:
