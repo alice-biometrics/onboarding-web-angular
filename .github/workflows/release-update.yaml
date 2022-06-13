@@ -23,7 +23,7 @@ jobs:
           npm install aliceonboarding@${RELEASE_VERSION}
       - name: Build angular demo
         run:  |
-          npm build
+          npm run build
       - name: Git - Update changes
         run: |
           npm version ${RELEASE_VERSION}
