@@ -35,5 +35,5 @@ jobs:
       - name: Push changes
         uses: alice-biometrics/github-push-action@master
         with:
-          github_access_token: ${{ secrets.PUBLIC_GITHUB_ACCESS_TOKEN }}
+          github_token: ${{ secrets.PUBLIC_GITHUB_ACCESS_TOKEN }}
 
