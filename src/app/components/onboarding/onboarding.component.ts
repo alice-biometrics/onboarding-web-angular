@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
+  DocumentCapturerType,
+  DocumentStageConfig,
+  DocumentType,
   Onboarding,
   OnboardingConfig,
   OnboardingWelcome,
@@ -21,7 +24,7 @@ export class OnboardingComponent implements OnInit {
   launchOnboardingWelcome() {
     console.log('launched onboarding process');
     let config = {
-      language: 'en',
+      language: 'es',
       requiredInfo: ['email'],
     };
     new OnboardingWelcome('alice-onboarding-mount', config).run(
@@ -32,9 +35,18 @@ export class OnboardingComponent implements OnInit {
 
   startOnboarding(userToken: string) {
     console.log('start onboarding');
+    const otdTitle = 'Upload OTD document';
+    const documentconfig = new DocumentStageConfig(DocumentCapturerType.ALL);
     let config = new OnboardingConfig()
       .withUserToken(userToken)
-      .withAddSelfieStage();
+      .withAddSelfieStage()
+      .withAddDocumentStage(DocumentType.IDCARD, null, documentconfig)
+      .withAddOtherTrustedDocumentStage(
+        otdTitle,
+        '',
+        '',
+        DocumentCapturerType.CAMERA
+      );
     new Onboarding('alice-onboarding-mount', config).run(
       this.onSuccess,
       this.onFailure,
