@@ -14,6 +14,8 @@ export class OnboardingComponent implements OnInit {
   @Input() trialToken: string;
   @Output() backEvent = new EventEmitter<boolean>(false);
 
+  onboardingUrl = "https://signaturit.alicebiometrics.com/onboarding/";
+
   ngOnInit() {
     this.launchOnboardingWelcome();
   }
@@ -35,19 +37,24 @@ export class OnboardingComponent implements OnInit {
     let config = new OnboardingConfig()
       .withUserToken(userToken)
       .withAddSelfieStage();
-    new Onboarding('alice-onboarding-mount', config).run(
+    console.log("onboarding config ", config, this.onboardingUrl);
+    new Onboarding('alice-onboarding-mount', config, this.onboardingUrl).run(
       this.onSuccess,
       this.onFailure,
       this.onCancel
     );
   }
 
-  onUserInfo(userInfo) {
-    let environment = 'staging';
-    new TrialAuthenticator(this.trialToken, userInfo, environment)
-      .execute()
-      .then((userToken: string) => this.startOnboarding(userToken))
-      .catch((error) => console.error(error));
+  async onUserInfo(userInfo) {
+    console.log("on user info ", userInfo)
+    //let environment = 'staging';
+    try {
+      let userToken = await new TrialAuthenticator(this.trialToken, userInfo).execute();
+      this.startOnboarding(userToken);
+    } catch(error) {
+      console.error("Error on Trial Authenticator", error);
+    }
+  
   }
 
   onCancel() {
@@ -59,7 +66,7 @@ export class OnboardingComponent implements OnInit {
   }
 
   onFailure(error: any) {
-    console.log('failure');
+    console.log('failure on onboarding ');
     console.error(error);
   }
 }
