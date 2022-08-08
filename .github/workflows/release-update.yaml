@@ -3,6 +3,12 @@ name: Release update
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/release-update.yaml'
+    
 
 env:
   GITHUB_REF: ${{ github.ref }}
