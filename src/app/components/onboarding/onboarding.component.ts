@@ -43,8 +43,9 @@ export class OnboardingComponent implements OnInit {
   }
 
   onUserInfo(userInfo) {
-    let environment = 'staging';
-    new TrialAuthenticator(this.trialToken, userInfo, environment)
+    //Only for internal test
+    //let environment = 'staging';
+    new TrialAuthenticator(this.trialToken, userInfo /*, environment*/)
       .execute()
       .then((userToken: string) => this.startOnboarding(userToken))
       .catch((error) => console.error(error));
