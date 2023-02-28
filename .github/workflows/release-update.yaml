@@ -6,7 +6,6 @@ on:
 
 env:
   GITHUB_REF: ${{ github.ref }}
-  NODE_OPTIONS: --openssl-legacy-provider
 
 jobs:
   angular-demo-update-release:
@@ -26,6 +25,7 @@ jobs:
           npm install aliceonboarding@${RELEASE_VERSION}
       - name: Build angular demo
         run:  |
+          export NODE_OPTIONS=--openssl-legacy-provider
           npm run build
       - name: Git - Update changes
         run: |
