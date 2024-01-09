@@ -5,7 +5,6 @@ interface JsonWTPaylaod extends JwtPayload {
 }
 
 export const isValidToken = (token: string): boolean => {
-  console.log('llgo aqui ');
   jwt_decode(token, { header: true });
   const decodedSandboxToken: JsonWTPaylaod = jwt_decode(token);
   const isValid =
