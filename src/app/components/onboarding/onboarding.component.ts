@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   Onboarding,
   OnboardingConfig,
-  OnboardingWelcome,
   TrialAuthenticator,
 } from 'aliceonboarding';
 
@@ -24,27 +23,30 @@ export class OnboardingComponent implements OnInit {
       language: 'en',
       requiredInfo: ['email'],
     };
-    new OnboardingWelcome('alice-onboarding-mount', config).run(
-      this.onUserInfo.bind(this),
-      this.onCancel.bind(this)
-    );
+    const email = Math.random().toString(36).substring(5) + `@alice.com`;
+    this.onUserInfo({ email });
   }
 
   startOnboarding(userToken: string) {
     console.log('start onboarding');
+
     let config = new OnboardingConfig()
       .withUserToken(userToken)
-      .withAddSelfieStage();
-    new Onboarding('alice-onboarding-mount', config).run(
-      this.onSuccess,
-      this.onFailure,
-      this.onCancel
-    );
+      .withAddSelfieStage({});
+    new Onboarding({
+      idSelector: 'alice-onboarding-mount',
+      onboardingConfig: config,
+    }).run(this.onSuccess, this.onFailure, this.onCancel);
   }
 
   onUserInfo(userInfo) {
+    console.log('user info ', userInfo);
     let environment = 'staging';
-    new TrialAuthenticator(this.trialToken, userInfo, environment)
+    new TrialAuthenticator({
+      sandboxToken: this.trialToken,
+      userInfo,
+      environment,
+    })
       .execute()
       .then((userToken: string) => this.startOnboarding(userToken))
       .catch((error) => console.error(error));
