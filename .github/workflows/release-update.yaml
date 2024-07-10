@@ -35,7 +35,7 @@ jobs:
         run: |
           git config --global user.email "dev@alicebiometrics.com"
           git config --global user.name "Alice Biometrics"
-          git commit -m "chore: update version to ${RELEASE_VERSION}"
+          git commit -m "feat: update version to ${RELEASE_VERSION}"
       - name: Push changes
         uses: alice-biometrics/github-push-action@master
         with:
